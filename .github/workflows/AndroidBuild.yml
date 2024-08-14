@@ -26,4 +26,23 @@ jobs:
           name: AndroidCICD.apk
           path: app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
 
+      - name: Decode Keystore
+        run: echo ${{ secrets.KEYSTORE }} | base64 --decode > keystore/keystore.jks
+
+      - name: Set up environment for signing
+        run: |
+          echo "RELEASE_KEYSTORE_PASSWORD=${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
+          echo "RELEASE_KEYSTORE_ALIAS=${{ secrets.RELEASE_KEYSTORE_ALIAS }}" >> $GITHUB_ENV
+          echo "RELEASE_KEY_PASSWORD=${{ secrets.RELEASE_KEY_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Build with Gradle
+        run: ./gradlew assembleRelease
+
+      - name: Upload Signed APK
+        uses: actions/upload-artifact@v4.3.6
+        with:
+          name: AndroidCICD.apk
+          path: app/build/outputs/apk/release/app-release.apk
