@@ -29,9 +29,6 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
-      - name: Decode Keystore
-        run: echo ${{ secrets.KEYSTORE }} | base64 --decode > keystore/keystore.jks
-
       - name: Set up environment for signing
         run: |
           echo "RELEASE_KEYSTORE_PASSWORD=${{ secrets.RELEASE_KEYSTORE_PASSWORD }}" >> $GITHUB_ENV
